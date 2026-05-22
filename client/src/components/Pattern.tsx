@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   formatBytes,
   useFileUpload,
@@ -53,10 +53,19 @@ export function Pattern({
   scan,  clearOCR,
 } = useOCR()
 
+const [ocrError, setOcrError] = useState<string | null>(null)
 
+  useEffect(() => {
+    if (ocrError) {
+      const timer = setTimeout(() => {
+        setOcrError(null)
+      }, 5000)
+      return () => clearTimeout(timer)
+    }
+  }, [ocrError])
 
   const [
-    { files, isDragging, errors },
+    { files, isDragging },
     {
       removeFile,
       //clearFiles,
@@ -76,7 +85,16 @@ export function Pattern({
   onFilesChange: async (files) => {
     if (!files.length) return
 
-    await scan(files[0].file)
+    try {
+   await scan(files[0].file)
+  
+} catch (error) {
+      setOcrError(
+        error instanceof Error
+          ? error.message
+          : "เกิดข้อผิดพลาด"
+      )
+    }
 
     onFilesChange?.(files)
   },
@@ -333,19 +351,24 @@ const handleRemove = (id: string) => {
         </div>
       
 
-      {/* Error Messages */}
-      {errors.length > 0 && (
-        <div className="w-full">
-          <Alert variant="destructive" className="mt-5">
+      {/* Floating Error Messages */}
+      {ocrError && (
+        <div className="fixed top-6 right-6 z-50 w-full max-w-sm animate-in fade-in slide-in-from-top-5 duration-300">
+          <Alert variant="destructive" className="shadow-lg border-destructive/20 bg-white/85 dark:bg-zinc-950/85 backdrop-blur-md pr-10">
             <CircleAlertIcon />
-            <AlertTitle>File upload error(s)</AlertTitle>
+            <AlertTitle>เกิดข้อผิดพลาด</AlertTitle>
             <AlertDescription>
-              {errors.map((error, index) => (
-                <p key={index} className="last:mb-0">
-                  {error}
-                </p>
-              ))}
+              <p className="last:mb-0 text-destructive/90 font-medium">
+                {ocrError}
+              </p>
             </AlertDescription>
+            <button
+              onClick={() => setOcrError(null)}
+              className="absolute top-3 right-3 text-destructive/50 hover:text-destructive hover:bg-destructive/10 p-1 rounded-lg transition-all duration-200 cursor-pointer"
+              aria-label="Close error"
+            >
+              <XIcon className="size-4" />
+            </button>
           </Alert>
         </div>
       )}

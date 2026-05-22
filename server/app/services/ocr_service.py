@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from PIL import Image
 from PIL import Image
 from PIL import ImageFilter, ImageOps, Image
@@ -47,23 +48,23 @@ Rules:
 1. First verify whether the image is a real Thai national ID card
 2. If the image is NOT a Thai national ID card, return exactly:
    NOT_THAI_ID_CARD
-3. Read text exactly as shown in the image
-4. Do not guess or hallucinate
-5. Do not modify or translate text
-6. Keep original structure and spacing as much as possible
-7. Try to read and organize text block-by-block from top to bottom
-8. Preserve line order based on the visual layout of the card
-9. If a title and name are attached together (e.g. Mrs.Bunyang, Mr.Smith),
+3. DO NOT include any markdown formatting, asterisks (*), hashes (#), or headers. Return plain raw text only.
+4. Read text exactly as shown in the image
+5. Do not guess or hallucinate
+6. Do not modify or translate text
+7. Keep original structure and spacing as much as possible
+8. Try to read and organize text block-by-block from top to bottom
+9. Preserve line order based on the visual layout of the card
+10. If a title and name are attached together (e.g. Mrs.Bunyang, Mr.Smith),
    separate them with a space (e.g. Mrs. Bunyang, Mr. Smith)
-10. Return ONLY the OCR result without any explanations or extra text.
+11. Return ONLY the OCR result without any explanations or extra text.
 Do NOT include symbols, markdown formatting, asterisks (*),
 OCR analysis, detected-word summaries, or image descriptions.
-11. For date fields, ALWAYS output in this fixed order on the same line:
+12. For date fields, ALWAYS output in this fixed order on the same line:
     วันออกบัตร <TH date> Date of Issue <EN date>
     วันบัตรหมดอายุ <TH date> Date of Expiry <EN date>
     Even if the card shows the date before the label, reorder so the label comes first.
-12. Never split a single word across lines (e.g. "วันบัตรหมดอายุ" must stay as one word)
-
+13. Never split a single word across lines (e.g. "วันบัตรหมดอายุ" must stay as one word).
 """
                     }
                 ]
@@ -82,6 +83,12 @@ OCR analysis, detected-word summaries, or image descriptions.
         response.raise_for_status()
 
     content = response.json()["choices"][0]["message"]["content"]
+    if content.strip() == "NOT_THAI_ID_CARD":
+        print('เป็นที่ A')
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded image is not a Thai national ID card"
+    )
 
     content = content.replace(":", "").replace("-", "")
     content = content.replace("\\n", " ")
@@ -163,6 +170,8 @@ OCR analysis, detected-word summaries, or image descriptions.
     content
 )
 
+
+
   
     card_data = {
         "id_number": data.get("id_number"),
@@ -178,6 +187,16 @@ OCR analysis, detected-word summaries, or image descriptions.
         "date_of_expiry": data.get("expiry_date"),
         
     }
+    if (
+    not data.get("id_number")
+    or not data.get("thai_name_th")
+): 
+        print('เป็นที่ B')
+
+        raise HTTPException(
+            status_code=400,
+            detail="Unable to extract valid Thai ID card information"
+    )
 
     return {
         "success": True,
