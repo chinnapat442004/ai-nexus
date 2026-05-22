@@ -287,7 +287,7 @@ const handleRemove = (id: string) => {
   },
   {
     label: "วันเกิด (ไทย)",
-    value: result?.birth_date_th,
+    value: result?.date_of_birth_th,
   },
   {
     label: "ที่อยู่",
@@ -295,11 +295,11 @@ const handleRemove = (id: string) => {
   },
   {
     label: "วันออกบัตร",
-    value: result?.issue_date,
+    value: result?.date_of_issue,
   },
   {
     label: "วันบัตรหมดอายุ",
-    value: result?.expiry_date,
+    value: result?.date_of_expiry,
   },
 ].map((item) => (
   <div
