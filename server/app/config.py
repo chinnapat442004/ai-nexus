@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     typhoon_api_key: str
-    rontend_url: str
+    frontend_url: str
 
     class Config:
         env_file = ".env"
