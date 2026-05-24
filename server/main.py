@@ -2,13 +2,12 @@ from fastapi import FastAPI, UploadFile, File
 from app.services.ocr_service import run_ocr
 from app.models.response import OCRResponse
 from fastapi.middleware.cors import CORSMiddleware
+from app.config import settings
 
 
 app = FastAPI()
 
-origins = [
-    "http://localhost:5173",  
-]
+origins = [settings.frontend_url]
 
 app.add_middleware(
     CORSMiddleware,

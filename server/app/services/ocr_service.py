@@ -84,7 +84,7 @@ OCR analysis, detected-word summaries, or image descriptions.
 
     content = response.json()["choices"][0]["message"]["content"]
     if content.strip() == "NOT_THAI_ID_CARD":
-        print('เป็นที่ A')
+  
         raise HTTPException(
             status_code=400,
             detail="Uploaded image is not a Thai national ID card"
@@ -93,8 +93,7 @@ OCR analysis, detected-word summaries, or image descriptions.
     content = content.replace(":", "").replace("-", "")
     content = content.replace("\\n", " ")
     content = re.sub(r'\s+', ' ', content).strip()
-    print(content)
-
+ 
     def s(pattern, text, group=1):
         m = re.search(pattern, text)
         return m.group(group).strip() if m and m.group(group) else None
@@ -191,7 +190,7 @@ OCR analysis, detected-word summaries, or image descriptions.
     not data.get("id_number")
     or not data.get("thai_name_th")
 ): 
-        print('เป็นที่ B')
+     
 
         raise HTTPException(
             status_code=400,
