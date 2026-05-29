@@ -1,9 +1,10 @@
 from fastapi import FastAPI, UploadFile, File
 from app.services.ocr_service import run_ocr
-from app.models.response import OCRResponse
+from app.models.ocr import OCRResponse
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-
+from app.api.ocr import router as ocr_router
+from app.api.animal import router as animal_router
 
 app = FastAPI()
 
@@ -17,12 +18,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def root():
-    return {"message": "Hello from ThaiCard OCR!"}
-
-@app.post("/ocr", response_model=OCRResponse)
-async def ocr(file: UploadFile = File(...)):
-    contents = await file.read()
-    result = await run_ocr(contents)
-    return result
+for router in [ocr_router, animal_router]:
+    app.include_router(router)
