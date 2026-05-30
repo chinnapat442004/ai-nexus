@@ -8,7 +8,7 @@ import {
   type FileMetadata,
   type FileWithPreview,
 } from '@/hooks/use-file-upload';
-
+import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 import { ImageIcon, UploadIcon, ZoomInIcon, XIcon } from 'lucide-react';
@@ -41,6 +41,21 @@ export function AnimalClassifier({
   );
   const [ocrError, setOcrError] = useState<string | null>(null);
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
+  const [isPreviewAnimals, setIsPreviewAnimals] = useState(false);
+  const [imageInfo, setImageInfo] = useState({
+    naturalWidth: 0,
+    naturalHeight: 0,
+    displayWidth: 0,
+    displayHeight: 0,
+  });
+  const [previewImageInfo, setPreviewImageInfo] = useState({
+    naturalWidth: 0,
+    naturalHeight: 0,
+    displayWidth: 0,
+    displayHeight: 0,
+  });
+
+  const imageRef = useRef<HTMLImageElement>(null);
 
   const isImage = (file: File | FileMetadata) => {
     return file.type.startsWith('image/');
@@ -63,6 +78,7 @@ export function AnimalClassifier({
     accept,
     multiple,
     initialFiles: [],
+
     onFilesChange: async (files) => {
       if (!files.length) return;
 
@@ -76,7 +92,8 @@ export function AnimalClassifier({
     },
   });
 
-  const { loading, result, scan, clearAnimal } = useAnimal();
+  const { loading, result, animals, scan, clearAnimal, fetchAnimals } =
+    useAnimal();
 
   useEffect(() => {
     return () => {
@@ -102,6 +119,11 @@ export function AnimalClassifier({
     clearAnimal();
   };
 
+  const openAnimalsDialog = () => {
+    fetchAnimals();
+    setIsPreviewAnimals(true);
+  };
+
   return (
     <div
       className={cn(
@@ -110,9 +132,16 @@ export function AnimalClassifier({
       )}
     >
       <div className="mb-6">
-        <h2 className="mb-1 text-xl font-semibold text-zinc-800">
-          Animal Classifier AI
-        </h2>
+        <div className="flex justify-between mb-2">
+          <h2 className=" text-xl font-semibold text-zinc-800">
+            Animal Classifier AI
+          </h2>
+          <div>
+            <Button onClick={() => openAnimalsDialog()}>
+              รายการสัตว์ทั้งหมด
+            </Button>
+          </div>
+        </div>
 
         <p className="text-sm text-zinc-500">
           อัปโหลดรูปภาพสัตว์เลี้ยงหรือสัตว์ป่า
@@ -191,23 +220,63 @@ export function AnimalClassifier({
                             <Spinner className="size-6 text-muted-foreground" />
                           </div>
                         )}
+                        <div className="relative inline-block transition-all duration-300 group-hover:scale-105">
+                          <img
+                            ref={imageRef}
+                            src={fileItem.preview}
+                            alt={fileItem.file.name}
+                            onLoad={(e) => {
+                              const img = e.currentTarget;
 
-                        <img
-                          src={fileItem.preview}
-                          alt={fileItem.file.name}
-                          onLoad={() =>
-                            setLoadingImages((prev) => ({
-                              ...prev,
-                              [fileItem.id]: false,
-                            }))
-                          }
-                          className={cn(
-                            'max-h-[320px] rounded-xl object-contain transition-all duration-300 group-hover:scale-105',
-                            loadingImages[fileItem.id] !== false
-                              ? 'opacity-0'
-                              : 'opacity-100',
+                              setImageInfo({
+                                naturalWidth: img.naturalWidth,
+                                naturalHeight: img.naturalHeight,
+                                displayWidth: img.clientWidth,
+                                displayHeight: img.clientHeight,
+                              });
+
+                              setLoadingImages((prev) => ({
+                                ...prev,
+                                [fileItem.id]: false,
+                              }));
+                            }}
+                            className={cn(
+                              'max-h-[320px] rounded-xl object-contain',
+                              loadingImages[fileItem.id] !== false
+                                ? 'opacity-0'
+                                : 'opacity-100',
+                            )}
+                          />
+                          {result?.data && imageInfo.naturalWidth > 0 && (
+                            <div
+                              className="pointer-events-none absolute border-4 border-red-500"
+                              style={{
+                                left: `${
+                                  ((result.data.position.x -
+                                    result.data.position.width / 2) /
+                                    imageInfo.naturalWidth) *
+                                  100
+                                }%`,
+                                top: `${
+                                  ((result.data.position.y -
+                                    result.data.position.height / 2) /
+                                    imageInfo.naturalHeight) *
+                                  100
+                                }%`,
+                                width: `${
+                                  (result.data.position.width /
+                                    imageInfo.naturalWidth) *
+                                  100
+                                }%`,
+                                height: `${
+                                  (result.data.position.height /
+                                    imageInfo.naturalHeight) *
+                                  100
+                                }%`,
+                              }}
+                            />
                           )}
-                        />
+                        </div>
                       </>
                     ) : (
                       <div className="flex h-[320px] w-[320px] items-center justify-center rounded-lg bg-muted">
@@ -359,14 +428,86 @@ export function AnimalClassifier({
                 <img
                   src={selectedImage}
                   alt="Preview"
-                  onLoad={() => setIsPreviewLoading(false)}
+                  onLoad={(e) => {
+                    const img = e.currentTarget;
+
+                    setPreviewImageInfo({
+                      naturalWidth: img.naturalWidth,
+                      naturalHeight: img.naturalHeight,
+                      displayWidth: img.clientWidth,
+                      displayHeight: img.clientHeight,
+                    });
+
+                    setIsPreviewLoading(false);
+                  }}
                   className={cn(
                     'rounded-lg sm:max-h-[45vh] sm:max-w-[85vw]  max-h-[85vh] max-w-[85vw] w-auto h-auto object-contain transition-opacity duration-300',
                     isPreviewLoading ? 'opacity-0' : 'opacity-100',
                   )}
                 />
+                {result?.data && previewImageInfo.naturalWidth > 0 && (
+                  <div
+                    className="pointer-events-none absolute border-4 border-red-500"
+                    style={{
+                      left: `${
+                        ((result.data.position.x -
+                          result.data.position.width / 2) /
+                          previewImageInfo.naturalWidth) *
+                        100
+                      }%`,
+                      top: `${
+                        ((result.data.position.y -
+                          result.data.position.height / 2) /
+                          previewImageInfo.naturalHeight) *
+                        100
+                      }%`,
+                      width: `${
+                        (result.data.position.width /
+                          previewImageInfo.naturalWidth) *
+                        100
+                      }%`,
+                      height: `${
+                        (result.data.position.height /
+                          previewImageInfo.naturalHeight) *
+                        100
+                      }%`,
+                    }}
+                  />
+                )}
               </>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!isPreviewAnimals} onOpenChange={setIsPreviewAnimals}>
+        <DialogContent
+          className="
+      
+          overflow-auto
+           w-full
+           md:w-auto
+           max-w-[90vw]
+           max-h-[90vh]
+           md:max-w-none
+           border-none
+           p-3
+           shadow-none
+"
+        >
+          <DialogHeader>
+            <DialogTitle>รายการสัตว์ทั้งหมด</DialogTitle>
+          </DialogHeader>
+
+          <div className="grid grid-cols-3 gap-2">
+            {animals?.animal_name.map((animal) => (
+              <div
+                key={animal}
+                className="rounded-md border p-2 text-center text-sm"
+              >
+                {animal}
+              </div>
+            ))}
           </div>
         </DialogContent>
       </Dialog>

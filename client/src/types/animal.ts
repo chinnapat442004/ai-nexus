@@ -16,3 +16,7 @@ export interface AnimalResponse {
   message: string;
   data: AnimalData | null;
 }
+
+export interface AnimalNameResponse {
+  animal_name: string[];
+}

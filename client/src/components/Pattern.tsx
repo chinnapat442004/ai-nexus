@@ -9,12 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useOCR } from '@/hooks/use-ocr';
 import { cn } from '../lib/utils';
 import { Button } from '../components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import {
   CircleAlertIcon,
@@ -389,9 +384,6 @@ export function Pattern({
     [&_[data-slot=dialog-close]]:transition-all
     [&_[data-slot=dialog-close]]:duration-200"
             >
-              <DialogHeader className="sr-only">
-                <DialogTitle>Image Preview</DialogTitle>
-              </DialogHeader>
               <div className="flex items-center justify-center">
                 {selectedImage && (
                   <>

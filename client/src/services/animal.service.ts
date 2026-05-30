@@ -1,5 +1,5 @@
 import { api } from './api.service';
-import type { AnimalResponse } from '@/types/animal';
+import type { AnimalNameResponse, AnimalResponse } from '@/types/animal';
 
 async function scanAnimal(file: File): Promise<AnimalResponse> {
   const formData = new FormData();
@@ -8,4 +8,9 @@ async function scanAnimal(file: File): Promise<AnimalResponse> {
   return response.data;
 }
 
-export { scanAnimal };
+async function getAnimals() {
+  const response = await api.get<AnimalNameResponse>('/animal');
+  return response.data;
+}
+
+export { scanAnimal, getAnimals };

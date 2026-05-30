@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { scanAnimal } from '@/services/animal.service';
-import type { AnimalResponse } from '@/types/animal';
+import { scanAnimal, getAnimals } from '@/services/animal.service';
+import { type AnimalNameResponse, type AnimalResponse } from '@/types/animal';
 
 function useAnimal() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AnimalResponse | null>(null);
+  const [animals, setAnimals] = useState<AnimalNameResponse>();
 
   const scan = async (file: File) => {
     setLoading(true);
@@ -20,6 +21,12 @@ function useAnimal() {
     }
   };
 
+  const fetchAnimals = async () => {
+    const response = await getAnimals();
+    console.log(response);
+    setAnimals(response);
+  };
+
   const clearAnimal = () => {
     setResult(null);
     setLoading(false);
@@ -28,7 +35,9 @@ function useAnimal() {
   return {
     loading,
     result,
+    animals,
     scan,
+    fetchAnimals,
     clearAnimal,
   };
 }
