@@ -15,7 +15,11 @@ class Animal(BaseModel):
     position: Position
 
 
+
 class AnimalResponse(BaseModel):
     success: bool
     message:str
     data: Optional[Animal] = None
+
+class AnimalNameResponse(BaseModel):
+     animal_name: list[str]

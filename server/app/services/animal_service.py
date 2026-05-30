@@ -92,38 +92,24 @@ async def detect_animal(file: UploadFile):
             status_code=400,
             detail="กรุณาอัปโหลดรูปภาพ"
         )
-
     try:
-    
         file_bytes = await file.read()
-
-     
         image = Image.open(io.BytesIO(file_bytes))
-
-    
         result = CLIENT.infer(
             image, 
             model_id="animal-detection-ofnht/1"
         )
-
         predictions = result.get("predictions", [])
-
         if not predictions:
             return {
                 "success": False,
                 "message": "ไม่พบสัตว์ในภาพ",
                 "data": None
             }
-
-    
         best_prediction = max(predictions, key=lambda x: x["confidence"])
         confidence = round(best_prediction["confidence"] * 100, 2)
-
         english_name = best_prediction["class"]
-
         thai_name = ANIMAL_TRANSLATIONS.get(english_name, english_name)
-
-
         if confidence < 70:
             return {
                 "success": False,
@@ -137,7 +123,6 @@ async def detect_animal(file: UploadFile):
                     }
                 }
             }
-
         return {
             "success": True,
             "message": "ตรวจจับสัตว์สำเร็จ",
@@ -150,9 +135,13 @@ async def detect_animal(file: UploadFile):
                 }
             }
         }
-
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=f"เกิดข้อผิดพลาดในการประมวลผล: {str(e)}"
         )
+
+async def get_animals():
+    return {
+        "animal_name": list(ANIMAL_TRANSLATIONS.values())
+    }
