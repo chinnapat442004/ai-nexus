@@ -1,10 +1,16 @@
-from fastapi import FastAPI, UploadFile, File
-from app.services.ocr_service import run_ocr
-from app.models.ocr import OCRResponse
+
+from fastapi import FastAPI
+
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.api.ocr import router as ocr_router
 from app.api.animal import router as animal_router
+from app.api.chat import router as chat_router
+from app.database import engine, Base
+
+import app.models
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -18,5 +24,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in [ocr_router, animal_router]:
+for router in [ocr_router, animal_router,chat_router]:
     app.include_router(router)

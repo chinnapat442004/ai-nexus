@@ -1,5 +1,5 @@
 from app.services.animal_service import get_animals
-from app.models.animal import AnimalResponse, AnimalNameResponse
+from app.schemas.animal import AnimalResponse, AnimalNameResponse
 from fastapi import APIRouter, UploadFile, File
 
 

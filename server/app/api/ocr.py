@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File
 
-from app.models.ocr import OCRResponse
-from app.services.ocr_service import run_ocr
+from app.schemas.ocr import OCRResponse
+from app.services.ocr import run_ocr
 
 router = APIRouter(prefix="/ocr", tags=["ocr"])
 
