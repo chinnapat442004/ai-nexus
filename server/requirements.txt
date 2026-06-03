@@ -10,6 +10,4 @@ google-genai
 python-multipart
 python-dotenv
 pgvector
-sentence-transformers
 psycopg2-binary
-python-dotenv
