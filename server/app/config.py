@@ -5,7 +5,6 @@ class Settings(BaseSettings):
     frontend_url: str
     roboflow_key:str
     database_url:str
-    groq_api_key: str
     gemini_api_key:str
 
     class Config:
