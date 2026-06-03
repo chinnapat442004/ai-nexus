@@ -42,8 +42,6 @@ export function Pattern({
   );
   const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 
-  // Create default images using FileMetadata type
-
   const { loading, result, scan, clearOCR } = useOCR();
 
   const [ocrError, setOcrError] = useState<string | null>(null);

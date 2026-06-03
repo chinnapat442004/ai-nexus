@@ -23,7 +23,7 @@ function useAnimal() {
 
   const fetchAnimals = async () => {
     const response = await getAnimals();
-    console.log(response);
+
     setAnimals(response);
   };
 

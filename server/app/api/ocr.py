@@ -10,3 +10,4 @@ async def ocr(file: UploadFile = File(...)):
     contents = await file.read()
     result = await run_ocr(contents)
     return result
+

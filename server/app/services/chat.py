@@ -1,9 +1,15 @@
 
-from starlette import responses
+from app.models.message import Message
+from app.database import engine
+
+
 from google.genai import types
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.services.rag import search_faq
+
 from google import genai
 
 
@@ -46,3 +52,13 @@ def chat(question: str) -> str:
              result += chunk.text
 
     return result
+
+def get_chats():
+    with Session(engine) as session:
+       statement = (
+            select(Message)
+            .order_by(Message.created_at.asc())
+        )
+       all_rows = session.scalars(statement).all()
+    return  all_rows
+
