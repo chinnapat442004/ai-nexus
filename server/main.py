@@ -24,5 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in [ocr_router, animal_router,chat_router]:
+from app.api.auth import router as auth_router
+
+for router in [ocr_router, animal_router, chat_router, auth_router]:
     app.include_router(router)

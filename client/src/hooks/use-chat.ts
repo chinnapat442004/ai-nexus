@@ -56,6 +56,10 @@ function useChat() {
     });
   }
 
+  function clearMessage() {
+    setMessages([]);
+  }
+
   return {
     loading,
     messages,
@@ -65,6 +69,7 @@ function useChat() {
     setChatRequest,
     sendChatMessage,
     clearChatRequest,
+    clearMessage,
   };
 }
 

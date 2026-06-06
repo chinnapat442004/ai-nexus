@@ -11,3 +11,5 @@ python-multipart
 python-dotenv
 pgvector
 psycopg2-binary
+python-jose[cryptography]
+google-auth

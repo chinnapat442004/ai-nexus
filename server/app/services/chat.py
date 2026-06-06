@@ -5,12 +5,16 @@ from app.database import engine
 
 from google.genai import types
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+
 
 from app.config import settings
 from app.services.rag import search_faq
 
 from google import genai
+
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
 
 
 client = genai.Client(api_key=settings.gemini_api_key)
@@ -20,7 +24,7 @@ def chat(question: str) -> str:
     faqs = search_faq(question, limit=3)
 
     if not faqs:
-        return "ขออภัยครับ ไม่พบข้อมูลที่เกี่ยวข้อง"
+        return "ขออภัยครับ คำถามนี้อยู่นอกขอบเขตข้อมูล FAQ ที่มีอยู่ในระบบ"
 
     context = "\n".join([
         f"Q: {f['question']}\nA: {f['answer']}"
@@ -36,8 +40,10 @@ def chat(question: str) -> str:
 
 กฎ:
 - ตอบโดยอ้างอิงจากข้อมูลที่ให้เท่านั้น
-- หากไม่มีข้อมูลเพียงพอให้ตอบว่า "ขออภัยครับ ไม่พบข้อมูลที่เกี่ยวข้อง"
+- หากไม่มีข้อมูลเพียงพอให้ตอบว่า "ขออภัยครับ คำถามนี้อยู่นอกขอบเขตข้อมูล FAQ ที่มีอยู่ในระบบ"
 - ห้ามเดาข้อมูล
+- มีการปรับใช้คำให้เหมาะสมกับคำถามที่ได้รับ คำตอบสุภาพ เป็นกันเอง
+
 
 ข้อมูลอ้างอิง:
 {context}
@@ -53,12 +59,12 @@ def chat(question: str) -> str:
 
     return result
 
-def get_chats():
+def get_chats_by_user(user_id: int):
     with Session(engine) as session:
        statement = (
-            select(Message)
+            select(Message).where(Message.user_id == user_id)
             .order_by(Message.created_at.asc())
         )
-       all_rows = session.scalars(statement).all()
-    return  all_rows
+       chats = session.scalars(statement).all()
+    return  chats
 
