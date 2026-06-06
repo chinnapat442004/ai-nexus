@@ -73,10 +73,11 @@ def google_login(payload: GoogleLoginRequest,response: Response, db: Session = D
         # ใช้ https เท่านั้นใน Production
         # Development (localhost) สามารถตั้งเป็น False ได้
         secure=settings.cookie_secure,
-
         # ป้องกัน CSRF ในระดับหนึ่ง
         # อนุญาตให้ส่ง Cookie เมื่อผู้ใช้เข้ามาจากการกดลิงก์ภายนอก
-        samesite="lax",
+        # Production (cross-origin): ต้องใช้ "none" + secure=True
+        # Localhost (same-origin):   ใช้ "lax" ได้ปกติ
+        samesite="none" if settings.cookie_secure else "lax",
 )
     return {
         "access_token": access_token,
