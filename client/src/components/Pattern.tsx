@@ -153,8 +153,11 @@ export function Pattern({
                       </p>
                     </div>
 
-                    <Button onClick={openFileDialog}>
-                      <UploadIcon className="h-4 w-4" />
+                    <Button
+                      onClick={openFileDialog}
+                      className="bg-sky-200 text-slate-700 font-semibold hover:bg-sky-300 hover:text-slate-800 transition-colors"
+                    >
+                      <UploadIcon className="h-4 w-4 " />
                       เลือกไฟล์
                     </Button>
                   </div>

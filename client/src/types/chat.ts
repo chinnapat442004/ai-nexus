@@ -5,12 +5,6 @@ export interface Message {
   created_at: Date;
 }
 
-export interface Faq {
-  id: number;
-  question: string;
-  answer: string;
-}
-
 export interface ChatRequest {
   question: string;
 }

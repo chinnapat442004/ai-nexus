@@ -5,11 +5,12 @@ from app.models import Message
 from fastapi import APIRouter
 from pydantic import BaseModel
 from app.services.chat import chat ,get_chats_by_user
-from app.database import engine
+
 from sqlalchemy.orm import Session
 from app.enums.user_role import UserRole
 from app.database import get_db
-
+from fastapi import Depends
+from sqlalchemy.orm import Session
 
 
 
@@ -28,8 +29,7 @@ def get_chats(current_user=Depends(get_current_user)):
     chats = get_chats_by_user(user_id)
     return chats
 
-from fastapi import Depends
-from sqlalchemy.orm import Session
+
 
 @router.post("", response_model=ChatResponse)
 def chat_endpoint(

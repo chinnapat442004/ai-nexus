@@ -1,9 +1,9 @@
 from pgvector.sqlalchemy import Vector
-from sqlalchemy import String, Text
+from sqlalchemy import String, Text ,DateTime
 from sqlalchemy.orm import Mapped, mapped_column
-
+from datetime import datetime
 from app.database import Base
-
+from sqlalchemy.sql import func
 
 class Faq(Base):
     __tablename__ = "faqs"
@@ -15,3 +15,16 @@ class Faq(Base):
 
     # embedding = mapped_column(Vector(1024), nullable=True)
     embedding = mapped_column(Vector(3072), nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        nullable=False,
+    )
+
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+        nullable=False,
+    )

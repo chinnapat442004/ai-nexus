@@ -137,7 +137,10 @@ export function AnimalClassifier({
             Animal Classifier AI
           </h2>
           <div>
-            <Button onClick={() => openAnimalsDialog()}>
+            <Button
+              className="bg-sky-200 text-slate-700 font-semibold hover:bg-sky-300 hover:text-slate-800 transition-colors  "
+              onClick={() => openAnimalsDialog()}
+            >
               รายการสัตว์ทั้งหมด
             </Button>
           </div>
@@ -200,7 +203,10 @@ export function AnimalClassifier({
                     </p>
                   </div>
 
-                  <Button onClick={openFileDialog}>
+                  <Button
+                    onClick={openFileDialog}
+                    className="bg-sky-200 text-slate-700 font-semibold hover:bg-sky-300 hover:text-slate-800 transition-colors"
+                  >
                     <UploadIcon className="h-4 w-4" />
                     เลือกไฟล์
                   </Button>
@@ -384,7 +390,6 @@ export function AnimalClassifier({
         </div>
       </div>
 
-      {/* Preview Dialog */}
       <Dialog
         open={!!selectedImage}
         onOpenChange={(open) => !open && setSelectedImage(null)}

@@ -17,8 +17,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Spinner } from '@/components/ui/spinner';
+import { MessageCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Chat = () => {
+  const navigate = useNavigate();
   const {
     user,
     login,
@@ -81,62 +84,80 @@ export const Chat = () => {
 
   return (
     <div className="flex h-[800px] flex-col overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
-      <header className="flex items-center justify-between border-b border-zinc-200 px-4 py-3">
-        <h2 className="font-semibold text-zinc-800">AI Assistant</h2>
+      <header className="border-b border-zinc-200 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-zinc-800">AI Assistant</h2>
 
-        {user && (
-          <div className="flex items-center gap-3">
-            <div className="hidden sm:flex flex-col items-end leading-tight">
-              <p className="max-w-[250px] truncate text-sm font-medium text-zinc-800">
-                {user.name}
-              </p>
-              <p className="max-w-[250px] truncate text-xs text-zinc-500">
-                {user.email}
-              </p>
+          {user && (
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:flex flex-col items-end leading-tight">
+                <p className="max-w-[250px] truncate text-sm font-medium text-zinc-800">
+                  {user.name}
+                </p>
+                <p className="max-w-[250px] truncate text-xs text-zinc-500">
+                  {user.email}
+                </p>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 rounded-full focus:outline-none">
+                    <img
+                      src={user.picture}
+                      alt={user.name}
+                      referrerPolicy="no-referrer"
+                      className="h-9 w-9 rounded-full border border-zinc-200 object-cover"
+                    />
+                  </button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent align="end" className="w-50">
+                  <div className="px-3 py-2 sm:hidden">
+                    <p className="truncate text-sm font-medium text-zinc-800">
+                      {user.name}
+                    </p>
+                    <p className="truncate text-xs text-zinc-500">
+                      {user.email}
+                    </p>
+                  </div>
+
+                  <div className="hidden px-3 py-2 sm:block">
+                    <p className="truncate text-sm font-medium text-zinc-800">
+                      {user.name}
+                    </p>
+                    <p className="truncate text-xs text-zinc-500">
+                      {user.email}
+                    </p>
+                  </div>
+
+                  <DropdownMenuSeparator />
+
+                  <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+                    <LogOutIcon className="mr-2 h-4 w-4" />
+                    ออกจากระบบ
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
+          )}
+        </div>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 rounded-full">
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    referrerPolicy="no-referrer"
-                    className="h-9 w-9 rounded-full object-cover border border-zinc-200"
-                  />
-                </button>
-              </DropdownMenuTrigger>
+        <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-3xl text-sm leading-6 text-zinc-500">
+            สอบถามข้อมูลกับ AI ได้ตามปกติ หรือจัดการข้อมูล FAQ
+            เพื่อช่วยให้ระบบตอบคำถามได้แม่นยำมากขึ้น
+          </p>
 
-              <DropdownMenuContent align="end" className="w-50">
-                <div className="px-3 py-2 sm:hidden">
-                  <p className="truncate text-sm font-medium text-zinc-800  ">
-                    {user.name}
-                  </p>
-                  <p className="truncate text-xs text-zinc-500">{user.email}</p>
-                </div>
-
-                <div className="hidden sm:block px-3 py-2 ">
-                  <p className="truncate text-sm font-medium text-zinc-800 ">
-                    {user.name}
-                  </p>
-                  <p className="truncate text-xs text-zinc-500">{user.email}</p>
-                </div>
-
-                <DropdownMenuSeparator />
-
-                <DropdownMenuItem
-                  className=" cursor-pointer"
-                  onClick={() => {
-                    logout();
-                  }}
-                >
-                  <LogOutIcon className="  mr-2 h-4 w-4" />
-                  ออกจากระบบ
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
+          <Button
+            variant="default"
+            size="sm"
+            onClick={() => navigate('/faq')}
+            className="shrink-0 gap-2 bg-sky-200 text-slate-700 font-semibold hover:bg-sky-300 hover:text-slate-800 transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" />
+            จัดการ FAQ
+          </Button>
+        </div>
       </header>
 
       {user !== undefined ? (

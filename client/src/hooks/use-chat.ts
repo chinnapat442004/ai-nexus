@@ -10,6 +10,7 @@ function useChat() {
   const [chatRequest, setChatRequest] = useState<ChatRequest>({
     question: '',
   });
+
   const [messagesLoading, setMessageLoading] = useState(false);
 
   const fetchMessages = async () => {
@@ -23,10 +24,11 @@ function useChat() {
   };
 
   async function sendChatMessage(request: ChatRequest) {
+    const tempUserMsgId = Date.now();
     setMessages((prev) => [
       ...prev,
       {
-        id: messages.length > 0 ? messages[messages.length - 1].id + 1 : 1,
+        id: tempUserMsgId,
         role: 'user',
         content: request.question,
         created_at: new Date(),
@@ -39,7 +41,7 @@ function useChat() {
       setMessages((prev) => [
         ...prev,
         {
-          id: messages.length > 0 ? messages[messages.length - 1].id + 1 : 1,
+          id: Date.now(),
           role: 'assistant',
           content: response.answer,
           created_at: new Date(),
