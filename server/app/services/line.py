@@ -8,7 +8,7 @@ from linebot.models import (
 )
 
 
-line_bot_api = LineBotApi('CHANNEL_ACCESS_TOKEN')
+line_bot_api = LineBotApi('channel_access_token')
 
 
 

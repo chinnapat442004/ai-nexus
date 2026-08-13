@@ -14,6 +14,13 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int 
     cookie_secure:bool
     
+   
+    channel_access_token:str
+   
+    channel_secret:str
+   
+   
+    
 
 
     class Config:
