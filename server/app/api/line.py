@@ -3,11 +3,11 @@ from fastapi import APIRouter,Request
 router = APIRouter(prefix="/line", tags=["line"])
 
 
-
+from app.config import settings
 
 
 from linebot import (
-    LineBotApi, WebhookHandler
+ WebhookHandler
 )
 from linebot.exceptions import (
     InvalidSignatureError
@@ -16,7 +16,7 @@ from linebot.exceptions import (
 from linebot.models import MessageEvent, TextMessage
 from app.services.line import handle_message
 
-handler = WebhookHandler('channel_secret')
+handler = WebhookHandler(settings.channel_secret)
 
 @router.post('/message')
 async def hello_word(request: Request):

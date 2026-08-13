@@ -1,14 +1,16 @@
 
 from linebot import (
-    LineBotApi, WebhookHandler
+    LineBotApi
 )
 
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    TextSendMessage,
 )
 
+from app.config import settings
 
-line_bot_api = LineBotApi('channel_access_token')
+
+line_bot_api = LineBotApi(settings.channel_access_token)
 
 
 
