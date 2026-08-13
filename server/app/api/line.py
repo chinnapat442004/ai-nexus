@@ -13,6 +13,9 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 
+from linebot.models import MessageEvent, TextMessage
+from app.services.line import handle_message
+
 handler = WebhookHandler('channel_secret')
 
 @router.post('/message')
@@ -26,3 +29,7 @@ async def hello_word(request: Request):
         print("Invalid signature. Please check your channel access token/channel secret.")
     return 'OK'
 
+
+@handler.add(MessageEvent, message=TextMessage)
+def handle_text_message(event):
+    handle_message(event)
