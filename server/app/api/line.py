@@ -7,7 +7,7 @@ from app.config import settings
 
 
 from linebot import (
- WebhookHandler
+     WebhookHandler
 )
 from linebot.exceptions import (
     InvalidSignatureError

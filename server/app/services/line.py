@@ -19,10 +19,7 @@ def handle_message(event):
         sendMessage(event,answer )
       
     
-def echo(event):
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text=event.message.text))
+
         
 def sendMessage(event,message):
         line_bot_api.reply_message(
