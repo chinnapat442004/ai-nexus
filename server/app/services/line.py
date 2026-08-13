@@ -2,7 +2,7 @@
 from linebot import (
     LineBotApi
 )
-
+from app.services.chat import chat
 from linebot.models import (
     TextSendMessage,
 )
@@ -15,10 +15,9 @@ line_bot_api = LineBotApi(settings.channel_access_token)
 
 
 def handle_message(event):
-        if event.message.text == 'สวัสดี' : 
-            sendMessage(event,"สวัสดีชาวโลก")
-        else:
-            echo(event)
+        answer = chat(event.message.text)
+        sendMessage(event,answer )
+      
     
 def echo(event):
         line_bot_api.reply_message(
