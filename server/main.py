@@ -7,6 +7,7 @@ from app.api.ocr import router as ocr_router
 from app.api.animal import router as animal_router
 from app.api.chat import router as chat_router
 from app.api.faq import router as faq_router
+from app.api.line import router as line_router
 from app.database import engine, Base
 
 import app.models
@@ -27,5 +28,5 @@ app.add_middleware(
 
 from app.api.auth import router as auth_router
 
-for router in [ocr_router, animal_router, chat_router, auth_router,faq_router]:
+for router in [ocr_router, animal_router, chat_router, auth_router,faq_router ,line_router]:
     app.include_router(router)
